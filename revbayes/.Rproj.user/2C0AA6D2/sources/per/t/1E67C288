@@ -1,0 +1,26 @@
+{
+    "id": "1E67C288",
+    "path": "~/Documents/GitHub/Chapter2/revbayes/plot_Yule_rates (1).r",
+    "project_path": "plot_Yule_rates (1).r",
+    "type": "r_source",
+    "hash": "3571103568",
+    "contents": "",
+    "dirty": false,
+    "created": 1665852658034.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "71,29",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1666032300,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1666032300336,
+    "read_only": false,
+    "read_only_alternatives": []
+}

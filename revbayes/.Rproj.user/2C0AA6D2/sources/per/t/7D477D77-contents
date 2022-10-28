@@ -1,0 +1,105 @@
+## Ada et al. 2022 - Diversification Rate - RevBayes # Results
+
+library(RevGadgets)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggpubr)
+library(cowplot)
+
+
+# read the trace files from by different priors
+
+#Yule parameters
+
+ALL50K_yule_lognormal <- readTrace("./output/071222/ALL50KTree_Yule_logNormal.log")[[1]]
+
+ALL50K_yule_Beta_18_2 <- readTrace("./output/071222/ALL50KTree_YuleBeta18-2.log")[[1]]
+
+
+## Birth-death beta parameters 
+
+ALL50K_BD_B_lognormal <- readTrace("./output/071222/ALL50K_BD_D_lognormal.log")[[ 1]]
+
+ALL50K_BD_B_Beta_18_2 <- readTrace("./output/071222/ALL50K_BD_D_B18_2.log")[[1]]
+
+## transform log-files for plotting
+
+#Birth-Death transform
+
+ALL50K_BD_TF_lognormal <- ALL50K_BD_B_lognormal %>% select(c(birth_rate, death_rate, diversification)) %>% mutate(PriorType="logNormal")
+
+ALL50K_BD_TF_Beta_18_2 <- ALL50K_BD_B_Beta_18_2 %>% select(c(birth_rate, death_rate, diversification)) %>% mutate(PriorType="Beta_18_2")
+
+#Yule transform
+
+ALL50K_yule_lognormal <- ALL50K_yule_lognormal %>% select(birth_rate) %>% mutate(PriorType="logNormal")
+
+ALL50K_yule_Beta_18_2 <- ALL50K_yule_Beta_18_2 %>% select(birth_rate) %>% mutate(PriorType="Beta_18_2")
+
+
+# summary stats for each model (to be filled)
+
+sd(ALL50K_yule_lognormal$birth_rate)
+
+sd(ALL50K_yule_Beta_18_2$birth_rate)
+
+mean(ALL50K_BD_TF_lognormal$diversification)
+
+mean(ALL50K_BD_TF_Beta_18_2$diversification)
+
+
+# t-tests for each distribtuion (to be filled)
+
+t.test(ALL50K_yule_lognormal$birth_rate, ALL50K_yule_Beta_18_2$birth_rate)
+
+#beta
+t.test(ALL50K_BD_B_lognormal$birth_rate, ALL50K_BD_B_Beta_18_2$birth_rate)
+
+t.test(ALL50K_BD_B_lognormal$death_rate, ALL50K_BD_B_Beta_18_2$death_rate)
+
+
+t.test(ALL50K_BD_TF_lognormal$death_rate,ALL50K_BD_TF_Beta_18_2$death_rate)
+
+
+
+##plot 
+
+#plot yule 
+
+ALL50K_combined_yule <- rbind(ALL50K_yule_lognormal,ALL50K_yule_Beta_18_2)
+
+Yule_plot <- ggplot(ALL50K_combined_yule, aes(x=birth_rate, fill=PriorType)) + geom_density(alpha=0.5) + xlim(0.0001, 0.15) +
+  xlab("Birth Rate") + ylab("Density") + scale_fill_discrete(name = "Prior distributions") + geom_vline(xintercept = mean(ALL50K_yule_lognormal$birth_rate), color = "#619CFF") +
+  geom_vline(xintercept = mean(ALL50K_yule_Beta_18_2$birth_rate), color = "#F8766D") + ggtitle("A) Prior Distribution of birth rate under Pure-birth-Yule model") 
+
+
+#plot Birth-death
+
+
+ALL50K_combined_BD <- rbind(ALL50K_BD_TF_lognormal,ALL50K_BD_TF_Beta_18_2)
+
+ALL50K_birth_combined_BD <-  subset(ALL50K_BD_TF_lognormal, select = c("birth_rate","PriorType"))
+
+
+  
+
+
+BD_B_plot <- ggplot(ALL50K_combined_BD, aes(x=birth_rate, fill =PriorType)) + geom_density(alpha=0.4) + xlim(0.0001, 0.05) +
+  xlab("Birth Rate") + ylab("Density") + scale_fill_discrete(name = "Prior distributions") +
+  geom_vline(xintercept = mean(ALL50K_BD_TF_lognormal$birth_rate), color = "#619CFF") +
+  geom_vline(xintercept = mean(ALL50K_BD_TF_Beta_18_2$birth_rate), color = "#F8766D") +  theme(legend.position="none") +  ggtitle("B) Prior Distribution of birth rate under constant rate Birth-Death model") 
+
+  
+
+BD_D_plot <- ggplot(ALL50K_combined_BD, aes(x=death_rate, fill=PriorType)) + geom_density(alpha=0.5) + xlim(0.0001, 0.02) +
+  xlab("Death Rate") + ylab("Density") + scale_fill_discrete(name = "Prior distributions") + geom_vline(xintercept = mean(ALL50K_BD_TF_lognormal$death_rate), color = "#619CFF") +
+  geom_vline(xintercept = mean(ALL50K_BD_TF_Beta_18_2$death_rate), color = "#F8766D") + ggtitle("C) Prior Distribution of death rate under constant rate Birth-Death model") 
+
+## combine
+
+
+#require(gridExtra)
+
+grid.arrange(BD_B_plot, BD_D_plot, nrow = 1 )
+

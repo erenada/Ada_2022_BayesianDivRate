@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#SBATCH --job-name="cat_subsets_unannotated"
+#SBATCH --time=100:00:00  # walltime limit (HH:MM:SS)
+#SBATCH --nodes=1   # number of nodes
+#SBATCH --ntasks-per-node=20   # CHANGE THIS to the number of processors on your node
+#SBATCH --mail-user="erenada@uri.edu" #CHANGE THIS to your email address
+#SBATCH --mail-type=ALL
+#SBATCH -o %x_%A.out
+#SBATCH -e %x_%A.err
+#SBATCH --exclusive
+
+cd $SLURM_SUBMIT_DIR
+
+module purge
+
+#CHANGE THESE IF NOT ON A URI SYSTEM
+
+module load Python/3.7.4-GCCcore-8.3.0
+module load parallel/20190922-GCCcore-8.3.0
+
+PTH=(/data/schwartzlab/eren/Chapter2/CONTIGS/ALIGNED/unannotated)
+PTH_OUT=(/data/schwartzlab/eren/Chapter2/CONTIGS/CONCAT/unannotated)
+
+cp /data/schwartzlab/eren/Chapter2/CONTIGS/Scripts/AMAS_ch2.py /data/schwartzlab/eren/Chapter2/CONTIGS/ALIGNED/unannotated/AMAS_ch2.py
+
+cd /data/schwartzlab/eren/Chapter2/CONTIGS/ALIGNED/unannotated/
+
+python3 AMAS_ch2.py concat -f fasta -d dna -i *fasta -c 20 --part-format raxml --concat-part unannotated_concat_partition.txt --concat-out unannotated_concat.fasta
+
+mv /data/schwartzlab/eren/Chapter2/CONTIGS/ALIGNED/unannotated/unannotated_concat.fasta /data/schwartzlab/eren/Chapter2/CONTIGS/CONCAT/unannotated/unannotated_concat.fasta
+mv /data/schwartzlab/eren/Chapter2/CONTIGS/ALIGNED/unannotated/unannotated_concat_partition.txt /data/schwartzlab/eren/Chapter2/CONTIGS/CONCAT/unannotated/unannotated_concat_partition.txt
+rm /data/schwartzlab/eren/Chapter2/CONTIGS/ALIGNED/unannotated/AMAS_ch2.py

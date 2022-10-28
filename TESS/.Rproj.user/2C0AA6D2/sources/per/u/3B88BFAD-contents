@@ -1,0 +1,49 @@
+## Main div rate calculation script
+
+## load the packages:
+
+library(TESS)
+
+UTRTree <- read.tree("../TimeTrees/GTRG/3TaxCalTrees/UTR_CLCK_medianTT.tree")
+
+times <- as.numeric( branching.times(UTRTree) )
+
+prior_delta <- function(x) { dexp(x,rate=10.0,log=TRUE) }
+prior_tau <- function(x) { dexp(x,rate=10.0,log=TRUE) }
+priorsConstBD <- c("diversification"=prior_delta,
+                   "turnover"=prior_tau)
+
+
+##Likelihood function
+
+likelihoodConstBD <- function(params) {
+  
+  speciation <- params[1] + params[2]
+  extinction <- params[2]
+  
+  lnl <- tess.likelihood(times,
+                         lambda = speciation,
+                         mu = extinction,
+                         samplingProbability = 0.68,
+                         log = TRUE)
+  
+  return (lnl)
+  
+}
+
+
+## MCMC
+
+samplesConstBD <- tess.mcmc(likelihoodFunction = likelihoodConstBD,
+                            priors = priorsConstBD,
+                            parameters = runif(2,0,1),
+                            logTransforms = c(TRUE,TRUE),
+                            delta = c(1,1),
+                            iterations = 10000,
+                            burnin = 1000,
+                            thinning = 10,
+                            adaptive = TRUE,
+                            verbose = TRUE)
+
+plot(samplesConstBD)
+

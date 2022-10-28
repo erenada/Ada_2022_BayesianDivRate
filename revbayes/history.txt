@@ -1,0 +1,83 @@
+# mcmc_Yule.Rev
+# simple div rate est.
+# Don't forget to convert the trees to NEXUS!T <- readTrees("/Users/eren/Documents/GitHub/Chapter2/revbayes/RefTrees/ALL50KTree")[1]# Get some useful variables from the data. We need these later on.taxa <- T.taxa()#initialize variable for vector of moves and monitorsmoves    = VectorMoves()monitors = VectorMonitors()#specifying model parametersbirth_rate_mean <- ln( ln(47.0/2.0) / T.rootAge() )birth_rate_sd <- 0.587405birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)standard deviation of 0.587405 rho <- T.ntips()/47root_time <- T.rootAge()timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)timetree.clamp(T)mymodel = model(birth_rate)#Running an MCMC analysismonitors.append( mnModel(filename="/Users/eren/Documents/GitHub/Chapter2/revbayes/output/ALL50K_Yule.log",printgen=10, separator = TAB) )monitors.append( mnScreen(printgen=1000, birth_rate) )mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=50000, tuningInterval=200)
+q()
+T <- readTrees("/Users/eren/Documents/GitHub/Chapter2/revbayes/RefTrees/ALL50KTree")[1]
+taxa <- T.taxa()
+moves    = VectorMoves()
+monitors = VectorMonitors()
+irth_rate_mean <- ln( ln(47.0/2.0) / T.rootAge() )
+birth_rate_sd <- 0.587405
+birth_rate_mean <- ln( ln(47.0/2.0) / T.rootAge() )
+birth_rate_sd <- 0.587405
+birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
+rho <- T.ntips()/47
+root_time <- T.rootAge()
+timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+timetree.clamp(T)
+mymodel = model(birth_rate)
+monitors.append( mnModel(filename="/Users/eren/Documents/GitHub/Chapter2/revbayes/output/ALL50K_Yule.log",printgen=10, separator = TAB) )
+monitors.append( mnScreen(printgen=1000, birth_rate) )
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=50000, tuningInterval=200)
+mymcmc.run(generations=5000000, tuningInterval=200)
+T <- readTrees("/Users/eren/Documents/GitHub/Chapter2/revbayes/RefTrees/primates_tree.nex")[1]
+taxa <- T.taxa()
+moves    = VectorMoves()
+monitors = VectorMonitors()
+birth_rate_mean <- ln( ln(367.0/2.0) / T.rootAge() )
+birth_rate_sd <- 0.587405
+birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
+rho <- T.ntips()/367
+root_time <- T.rootAge()
+timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+timetree.clamp(T
+T <- readTrees("/Users/eren/Documents/GitHub/Chapter2/revbayes/RefTrees/ALL50KTree")[1]
+taxa <- T.taxa()
+moves    = VectorMoves()
+monitors = VectorMonitors()
+birth_rate_mean <- ln( ln(367.0/2.0) / T.rootAge() )
+birth_rate_sd <- 0.587405
+birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
+rho <- T.ntips()/367
+root_time <- T.rootAge()
+timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+timetree.clamp(T)
+mymodel = model(birth_rate)
+monitors.append( mnModel(filename="/Users/eren/Documents/GitHub/Chapter2/revbayes/output/primates_Yule.log",printgen=10, separator = TAB) )
+monitors.append( mnScreen(printgen=1000, birth_rate) )
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=5000000, tuningInterval=200)
+mymcmc.run(generations=500000, tuningInterval=200, underPrior=TRUE)
+mymcmc.run(generations=5000000, tuningInterval=200, underPrior=TRUE)
+q()
+################################################################################
+#
+# RevBayes Example: Bayesian inference of diversification rates under a
+#                   constant-rate pure-birth model
+#
+# authors: Sebastian Hoehna and Tracy A. Heath######################################################################################################### Reading in the Data ############################## This just defines a single model for all sites ########## Read in sequence data for both genesT <- readTrees("RefTrees/intronTree.nex")[1]# Get some useful variables from the data. We need these later on.taxa <- T.taxa()# Create some vector for the moves and monitors of this analysismoves    = VectorMoves()monitors = VectorMonitors()####################### pure-birth  model  ########################## the birth rate is a stochastic random variable drawn from a lognormal prior### MCMC samples this variable using a scale proposalbirth_rate_mean <- ln( ln(47.0/2.0) / T.rootAge() )birth_rate_sd <- 0.587405birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )### rho is the probability of sampling species at the present
+### fix this to 233/367, since there are ~367 described species of primates### and we have sampled 233rho <- T.ntips()/47### the BDP is conditioned on the root time, we can get this value from our tree and set a constant noderoot_time <- T.rootAge()### the time tree is a stochastic node modeled by the constant rate birth-death process (dnBDP)### by setting mu to the constant value 0.0, we are specifying a pure-birth processtimetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)### clamp the model with the "observed" treetimetree.clamp(T)############## The Model ################# workspace model wrapper ###mymodel = model(birth_rate)### set up the monitors that will output parameter values to file and screenmonitors.append( mnModel(filename="output/intron_Yule.log",printgen=10, separator = TAB) )monitors.append( mnScreen(printgen=1000, birth_rate) )################# The Analysis ###################### compute power posterior distributions
+pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=127, sampleFreq=10)
+pow_p.burnin(generations=10000,tuningInterval=200)
+pow_p.run(generations=10000)
+### Use stepping-stone sampling to calculate marginal likelihoods
+ss = steppingStoneSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+write("Stepping stone marginal likelihood:\\t", ss.marginal() )
+### Use path-sampling to calculate marginal likelihoods
+ps = pathSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+write("Path-sampling marginal likelihood:\\t", ps.marginal() )
+q()
+clear 
+q()
+help()
+?mcmc.run
+?monitors.append
+?append
+?mnModel
+q()
+?mnModel
+q()
+?mcmc
+q()

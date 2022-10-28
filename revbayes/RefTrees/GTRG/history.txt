@@ -1,0 +1,5 @@
+T <- readTrees("/Users/eren/Documents/GitHub/Chapter2/revbayes/RefTrees/ALL50KTree")[1]
+ALL50KTree
+T <- readTrees("/Users/eren/Documents/GitHub/Chapter2/revbayes/RefTrees/ALL50KTree")[1]
+taxa <- T.taxa()
+q()

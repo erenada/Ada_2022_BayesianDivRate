@@ -1,0 +1,27 @@
+{
+    "id": "611D3005",
+    "path": "~/Documents/GitHub/Chapter2/input/summary_stats.R",
+    "project_path": "summary_stats.R",
+    "type": "r_source",
+    "hash": "2641404507",
+    "contents": "",
+    "dirty": false,
+    "created": 1656959224686.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "17,48",
+        "scrollLine": "1"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1658705028,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1658705028895,
+    "read_only": false,
+    "read_only_alternatives": []
+}
