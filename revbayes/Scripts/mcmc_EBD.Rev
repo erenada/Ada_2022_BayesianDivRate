@@ -1,12 +1,6 @@
-################################################################################
-#
-# RevBayes Example: Bayesian inference of diversification rates under a
-#                   episodic birth-death model
-#
-#
-# authors: Sebastian Hoehna
-#
-################################################################################
+## Diversification rate estimation under log-normal and Beta2,18 priors
+
+## Modified from https://revbayes.github.io/#
 
 #######################
 # Reading in the Data #

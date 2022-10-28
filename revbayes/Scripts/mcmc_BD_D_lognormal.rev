@@ -1,16 +1,6 @@
-################################################################################
-#
-# RevBayes Example: Bayesian inference of diversification rates under a
-#                   constant-rate birth-death model
-#
-#
-# authors: Sebastian Hoehna and Tracy A. Heath
-#
-################################################################################
+## Diversification rate estimation under log-normal and Beta2,18 priors
 
-#######################
-# Reading in the Data #
-#######################
+## Modified from https://revbayes.github.io/
 
 ###### This just defines a single model for all sites #######
 
